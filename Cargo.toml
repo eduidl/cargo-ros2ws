@@ -1,0 +1,29 @@
+[package]
+name = "cargo-ros2ws"
+version = "0.1.0"
+authors = ["Yuma Hiramatsu <yuma.hiramatsu@gmail.com>"]
+edition = "2018"
+description = "A Cargo subcommand for build crates with ROS2"
+repository = "https://github.com/ros2rust/cargo-ros2ws"
+readme = "README.md"
+license = "Apache-2.0"
+keywords = [
+    "cargo",
+    "cargo-subcommand",
+    "cli",
+    "ROS2"
+]
+categories = [
+    "command-line-utilities",
+    "depelopment-tools",
+    "development-tools::cargo-plugins"
+]
+
+[dependencies]
+anyhow = "1.0.34"
+structopt = "0.3.20"
+thiserror = "1.0.22"
+toml_edit = "0.2.0"
+
+[dev-dependencies]
+tempfile = "3.1.0"
