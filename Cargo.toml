@@ -21,6 +21,7 @@ categories = [
 
 [dependencies]
 anyhow = "1.0.34"
+fs2 = "0.4.3"
 structopt = "0.3.20"
 thiserror = "1.0.22"
 toml_edit = "0.2.0"

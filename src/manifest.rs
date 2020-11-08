@@ -17,15 +17,6 @@ pub struct Manifest {
 }
 
 impl Manifest {
-    pub(crate) fn init() -> Self {
-        let mut manifest = Self {
-            data: Document::new(),
-        };
-        manifest.get_workspace_members_section().unwrap();
-        manifest.get_patch_crates_io_section().unwrap();
-        manifest
-    }
-
     pub(crate) fn read_from(src: &impl AsRef<Path>) -> Result<Self> {
         ensure_abs_path(&src)?;
         ensure_is_file(&src)?;
@@ -124,6 +115,13 @@ impl Manifest {
 
         Ok(crates_io)
     }
+
+    #[cfg(test)]
+    fn init() -> Self {
+        Self {
+            data: Document::new(),
+        }
+    }
 }
 
 fn ensure_abs_path(path: &impl AsRef<Path>) -> Result<()> {
@@ -149,60 +147,6 @@ mod test {
     const MANIFEST_FILENAME: &str = "Cargo.toml";
 
     #[test]
-    fn test_manifest_new_from_empty() -> Result<()> {
-        static ANS: &str = r#"
-[workspace]
-members = []
-
-[patch.crates-io]
-"#;
-
-        let temp_dir = TempDir::new()?;
-        let file = temp_dir.path().join(MANIFEST_FILENAME);
-        fs::write(&file, "")?;
-
-        let manifest = Manifest::init();
-        manifest.write_to(&file)?;
-
-        let data = fs::read_to_string(&file)?;
-        assert_eq!(data, ANS);
-
-        Ok(())
-    }
-
-    #[test]
-    fn test_manifest_new_with_content() -> Result<()> {
-        static CONTENT: &str = r#"
-[workspace]
-members = ["test1", "test2"]
-exclude = ["test3"]
-
-[patch.crates-io]
-hoge = { path = "../hoge" }
-piyo = { path = "/piyo" }
-"#;
-
-        static ANS: &str = "
-[workspace]
-members = []
-
-[patch.crates-io]
-";
-
-        let temp_dir = TempDir::new()?;
-        let file = temp_dir.path().join(MANIFEST_FILENAME);
-        fs::write(&file, CONTENT)?;
-
-        let manifest = Manifest::init();
-        manifest.write_to(&file)?;
-
-        let data = fs::read_to_string(file)?;
-        assert_eq!(data, ANS);
-
-        Ok(())
-    }
-
-    #[test]
     fn test_manifest_write_to_error() -> Result<()> {
         let temp_dir = TempDir::new()?;
         let file = temp_dir.path().join(MANIFEST_FILENAME);
@@ -225,8 +169,6 @@ members = []
         static ANS: &str = r#"
 [workspace]
 members = ["/test1", "/test2/test2"]
-
-[patch.crates-io]
 "#;
 
         let temp_dir = TempDir::new()?;
